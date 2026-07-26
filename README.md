@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/jbkunama1/hAI.AnythingMCP/main/Logo_I_AnyMCP.png" alt="hAI.AnythingMCP Logo" width="220">
+  <img src="https://raw.githubusercontent.com/jbkunama1/hAI.AnythingMCP/main/Logo_I_AnyMCP.png" alt="hAI.AnythingMCP Logo" width="600">
 </p>
 
 # hAI.AnythingMCP
