@@ -18,6 +18,15 @@ services:
     networks:
       - highfishNetwork
 
+  redis:
+    image: redis:7-alpine
+    container_name: hai_anythingmcp_redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - highfishNetwork
+
   anythingmcp:
     image: helpcodeai/anythingmcp:latest
     container_name: hai_anythingmcp
@@ -25,6 +34,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_started
     ports:
       - "${AMCP_PORT_UI:-3003}:3000"
       - "${AMCP_PORT_MCP:-4004}:4000"
@@ -32,18 +43,19 @@ services:
       - NODE_ENV=production
       - PORT=4000
       - DATABASE_URL=postgresql://amcp:${POSTGRES_PASSWORD:-amcp}@postgres:5432/anythingmcp
+      - REDIS_URL=redis://redis:6379
       - JWT_SECRET=${JWT_SECRET}
       - ENCRYPTION_KEY=${ENCRYPTION_KEY}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-      - NEXTAUTH_URL=${FRONTEND_URL:-http://localhost:3003}
-      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3003}
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:4004}
-      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:3003}
-      - SERVER_URL=${SERVER_URL:-http://localhost:4004}
+      - NEXTAUTH_URL=${FRONTEND_URL:-https://haimcp.arbeitermili.eu}
+      - FRONTEND_URL=${FRONTEND_URL:-https://haimcp.arbeitermili.eu}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-https://haimcpapi.arbeitermili.eu}
+      - CORS_ORIGIN=${CORS_ORIGIN:-https://haimcp.arbeitermili.eu}
+      - SERVER_URL=${SERVER_URL:-https://haimcpapi.arbeitermili.eu}
       - ALLOW_OPEN_REGISTRATION=${ALLOW_OPEN_REGISTRATION:-false}
       - MCP_AUTH_MODE=${MCP_AUTH_MODE:-legacy}
       - MCP_API_KEY=${MCP_API_KEY:-}
-      - MCP_BEARER_TOKEN=${MCP_BEARER_TOKEN:-}
+      - MCP_BEARER_TOKEN=${MCP_BEARER_TOKEN}
       - MCP_ALLOW_ANONYMOUS=${MCP_ALLOW_ANONYMOUS:-false}
     volumes:
       - anythingmcp_data:/app/data
@@ -60,6 +72,8 @@ volumes:
   anythingmcp_data:
     driver: local
   anythingmcp_postgres:
+    driver: local
+  redis_data:
     driver: local
 
 networks:

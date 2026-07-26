@@ -1,113 +1,100 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>hAI.AnythingMCP</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0d1117;
-      color: #e6edf3;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-    }
-    .card {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 12px;
-      padding: 2.5rem;
-      max-width: 640px;
-      width: 100%;
-      text-align: center;
-    }
-    .logo {
-      width: 220px;
-      max-width: 100%;
-      height: auto;
-      margin-bottom: 1rem;
-    }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      color: #58a6ff;
-    }
-    .subtitle {
-      color: #8b949e;
-      margin-bottom: 2rem;
-      font-size: 0.95rem;
-    }
-    .badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      justify-content: center;
-      margin-bottom: 2rem;
-    }
-    .badges img { height: 20px; }
-    .links {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-    .btn {
-      display: inline-block;
-      padding: 0.6rem 1.4rem;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: opacity 0.2s;
-    }
-    .btn:hover { opacity: 0.85; }
-    .btn-primary { background: #238636; color: #fff; }
-    .btn-secondary { background: #21262d; color: #e6edf3; border: 1px solid #30363d; }
-    .btn-mcp { background: #1f6feb; color: #fff; }
-    .network-tag {
-      display: inline-block;
-      background: #3d1f8f;
-      color: #c9b1ff;
-      border-radius: 20px;
-      padding: 0.2rem 0.8rem;
-      font-size: 0.8rem;
-      margin-top: 1.5rem;
-    }
-    footer {
-      margin-top: 2rem;
-      font-size: 0.8rem;
-      color: #484f58;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>hAI.AnythingMCP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0d1117;
+  color: #e6edf3;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  padding: 2.5rem;
+  max-width: 640px;
+  width: 100%;
+  text-align: center;
+}
+.logo { width: 220px; max-width: 100%; height: auto; margin-bottom: 1rem; }
+h1 { font-size: 2rem; margin-bottom: 0.5rem; color: #58a6ff; }
+.subtitle { color: #8b949e; margin-bottom: 2rem; font-size: 0.95rem; }
+.badges { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; }
+.badges img { height: 20px; }
+.links { display: flex; flex-direction: column; gap: 0.75rem; }
+.btn {
+  display: inline-block;
+  padding: 0.6rem 1.4rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+}
+.btn:hover { opacity: 0.85; }
+.btn-primary { background: #238636; color: #fff; }
+.btn-secondary { background: #21262d; color: #e6edf3; border: 1px solid #30363d; }
+.btn-mcp { background: #1f6feb; color: #fff; }
+.network-tag {
+  display: inline-block;
+  background: #3d1f8f;
+  color: #c9b1ff;
+  border-radius: 20px;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.8rem;
+  margin-top: 1.5rem;
+  margin-right: 0.4rem;
+}
+.tunnel-tag {
+  display: inline-block;
+  background: #3a2a0f;
+  color: #f2b544;
+  border-radius: 20px;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.8rem;
+  margin-top: 1.5rem;
+}
+footer { margin-top: 2rem; font-size: 0.8rem; color: #484f58; }
+</style>
 </head>
 <body>
-  <div class="card">
-    <img src="./Logo_I_AnyMCP.png" alt="hAI.AnythingMCP Logo" class="logo">
-    <h1>🔌 hAI.AnythingMCP</h1>
-    <p class="subtitle">Self-hosted MCP Gateway · Portainer Stack · highfishNetwork</p>
+<div class="card">
+  <img class="logo" src="https://raw.githubusercontent.com/jbkunama1/hAI.AnythingMCP/main/logo.png" alt="hAI.AnythingMCP Logo">
 
-    <div class="badges">
-      <img src="https://img.shields.io/badge/upstream-HelpCode--ai%2Fanythingmcp-blue?logo=github" alt="upstream">
-      <img src="https://img.shields.io/badge/docker-helpcodeai%2Fanythingmcp-2496ED?logo=docker&logoColor=white" alt="docker">
-      <img src="https://img.shields.io/badge/license-AGPL--3.0-green?logo=gnu" alt="license">
-      <img src="https://img.shields.io/badge/network-highfishNetwork-blueviolet" alt="network">
-      <img src="https://img.shields.io/badge/stack-Portainer-13BEF9?logo=portainer&logoColor=white" alt="portainer">
-    </div>
+  <h1>🔌 hAI.AnythingMCP</h1>
+  <p class="subtitle">Self-hosted MCP Gateway · Portainer Stack · highfishNetwork · Cloudflare Tunnel</p>
 
-    <div class="links">
-      <a href="http://localhost:3000" class="btn btn-primary">🖥️ Web UI öffnen (Port 3000)</a>
-      <a href="http://localhost:4000/mcp" class="btn btn-mcp">🔗 MCP Endpoint (Port 4000)</a>
-      <a href="http://localhost:4000/api/docs" class="btn btn-secondary">📖 API Docs (Swagger)</a>
-      <a href="https://github.com/jbkunama1/hAI.AnythingMCP" class="btn btn-secondary">📁 GitHub Repo</a>
-      <a href="https://github.com/HelpCode-ai/anythingmcp" class="btn btn-secondary">⬆️ Upstream Repo</a>
-    </div>
-
-    <span class="network-tag">🐳 highfishNetwork</span>
+  <div class="badges">
+    <img src="https://img.shields.io/badge/upstream-HelpCode--ai%2Fanythingmcp-blue?logo=github" alt="upstream">
+    <img src="https://img.shields.io/badge/docker-helpcodeai%2Fanythingmcp-2496ED?logo=docker&logoColor=white" alt="docker">
+    <img src="https://img.shields.io/badge/license-AGPL--3.0-green?logo=gnu" alt="license">
+    <img src="https://img.shields.io/badge/network-highfishNetwork-blueviolet?logo=docker" alt="network">
+    <img src="https://img.shields.io/badge/stack-Portainer-13BEF9?logo=portainer&logoColor=white" alt="portainer">
+    <img src="https://img.shields.io/badge/access-Cloudflare%20Tunnel-F38020?logo=cloudflare&logoColor=white" alt="tunnel">
   </div>
+
+  <div class="links">
+    <a class="btn btn-primary" href="https://haimcp.arbeitermili.eu">🖥️ Web UI öffnen (haimcp.arbeitermili.eu)</a>
+    <a class="btn btn-mcp" href="https://haimcpapi.arbeitermili.eu/mcp">🔗 MCP Endpoint (haimcpapi.arbeitermili.eu)</a>
+    <a class="btn btn-secondary" href="https://haimcpapi.arbeitermili.eu/api/docs">📖 API Docs (Swagger)</a>
+    <a class="btn btn-secondary" href="https://github.com/jbkunama1/hAI.AnythingMCP">📁 GitHub Repo</a>
+    <a class="btn btn-secondary" href="https://github.com/HelpCode-ai/anythingmcp">⬆️ Upstream Repo</a>
+  </div>
+
+  <span class="network-tag">🐳 highfishNetwork</span>
+  <span class="tunnel-tag">☁️ hinter Cloudflare Tunnel</span>
+
   <footer>hAI.AnythingMCP · jbkunama1 · realteacher.de</footer>
+</div>
 </body>
 </html>

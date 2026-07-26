@@ -1,10 +1,11 @@
-<div align="center">
-
-<img src="./Logo_I_AnyMCP.png" alt="hAI.AnythingMCP Logo" width="480">
+<p align="center">
+  <img src="https://raw.githubusercontent.com/jbkunama1/hAI.AnythingMCP/main/logo.png" alt="hAI.AnythingMCP Logo" width="220">
+</p>
 
 # hAI.AnythingMCP
 
 **Self-hosted AnythingMCP Gateway** — läuft als Portainer Stack im `highfishNetwork`
+
 Basiert auf [HelpCode-ai/anythingmcp](https://github.com/HelpCode-ai/anythingmcp) · wandelt REST, SOAP, GraphQL & Datenbanken in MCP-Tools für Claude, ChatGPT, Gemini & Co. um
 
 [![Upstream](https://img.shields.io/badge/upstream-HelpCode--ai%2Fanythingmcp-blue?logo=github)](https://github.com/HelpCode-ai/anythingmcp)
@@ -14,8 +15,7 @@ Basiert auf [HelpCode-ai/anythingmcp](https://github.com/HelpCode-ai/anythingmcp
 [![Network](https://img.shields.io/badge/network-highfishNetwork-blueviolet?logo=docker)]()
 [![Stack](https://img.shields.io/badge/stack-Portainer-13BEF9?logo=portainer&logoColor=white)]()
 [![Platform](https://img.shields.io/badge/platform-Debian%20%7C%20DietPi-red?logo=debian)]()
-
-</div>
+[![Tunnel](https://img.shields.io/badge/access-Cloudflare%20Tunnel-F38020?logo=cloudflare&logoColor=white)]()
 
 ---
 
@@ -27,8 +27,10 @@ Basiert auf [HelpCode-ai/anythingmcp](https://github.com/HelpCode-ai/anythingmcp
 - [Schnellstart (Portainer Stack)](#schnellstart-portainer-stack)
 - [Umgebungsvariablen](#umgebungsvariablen)
 - [Services & Ports](#services--ports)
+- [Öffentlicher Zugriff via Cloudflare Tunnel](#öffentlicher-zugriff-via-cloudflare-tunnel)
 - [Netzwerk](#netzwerk)
 - [Hinweise & Sicherheit](#hinweise--sicherheit)
+- [Troubleshooting](#troubleshooting)
 - [Upstream & Lizenz](#upstream--lizenz)
 
 ---
@@ -55,7 +57,8 @@ AnythingMCP ist ein selbst-gehostetes, KI-gestütztes **MCP-Gateway**. Es wandel
 | 📋 Audit Log | Jeder Tool-Call wird protokolliert |
 | 👥 RBAC | Rollen & Tool-Whitelisting pro Nutzer |
 | 🧠 Knowledge Graph | Beziehungen zwischen Connectors – optional, opt-in |
-| 🐳 Docker-ready | `docker compose up` – läuft sofort |
+| 🐳 Docker-ready | `docker compose up` – läuft sofort inkl. Postgres & Redis |
+| 🌐 Tunnel-ready | Läuft hinter Cloudflare Tunnel ohne Port-Forwarding am Router |
 
 ---
 
@@ -65,6 +68,7 @@ AnythingMCP ist ein selbst-gehostetes, KI-gestütztes **MCP-Gateway**. Es wandel
 - Portainer (Stack-Deployment)
 - Externes Netzwerk `highfishNetwork` muss vorhanden sein
 - `.env` Datei auf Basis von `.env.example` anlegen
+- (Optional, empfohlen) Laufender Cloudflare Tunnel für öffentlichen Zugriff ohne offene Ports
 
 ```bash
 docker network create highfishNetwork
@@ -78,13 +82,24 @@ docker network create highfishNetwork
 2. **Repository URL:** `https://github.com/jbkunama1/hAI.AnythingMCP.git`
 3. **Repository reference:** `refs/heads/main`
 4. **Compose path:** `docker-compose.yml`
-5. **Environment-Variablen** eintragen
+5. **Environment-Variablen** eintragen (siehe unten)
 6. **Deploy Stack**
 
+Secrets vor dem Deploy generieren:
+
+```bash
+openssl rand -base64 48    # JWT_SECRET
+openssl rand -hex 16       # ENCRYPTION_KEY (muss exakt 32 Zeichen sein)
+openssl rand -base64 32    # NEXTAUTH_SECRET
+openssl rand -hex 32       # MCP_BEARER_TOKEN
+```
+
 Nach dem Start:
-- Web UI: `http://<deine-ip>:3000`
-- MCP Endpoint: `http://<deine-ip>:4000/mcp`
-- ⚠️ **Sofort ersten Admin-Account anlegen!**
+
+- Web UI: `http://<host>:3003`
+- MCP Endpoint: `http://<host>:4004/mcp/:serverId`
+- API Docs: `http://<host>:4004/api/docs`
+- ⚠️ **Sofort ersten Admin-Account anlegen!** Der erste registrierte User wird automatisch Admin.
 
 ---
 
@@ -94,21 +109,75 @@ Siehe [`.env.example`](./.env.example) für alle verfügbaren Variablen.
 
 | Variable | Beschreibung | Beispiel |
 |---|---|---|
-| `AMCP_SECRET` | App-Secret (min. 32 Zeichen) | `openssl rand -hex 32` |
-| `AMCP_ADMIN_EMAIL` | Admin-E-Mail | `admin@example.com` |
-| `AMCP_PORT_UI` | UI-Port | `3000` |
-| `AMCP_PORT_MCP` | MCP-Endpunkt-Port | `4000` |
-| `REDIS_URL` | Redis-URL (optional) | `redis://redis:6379` |
+| `POSTGRES_PASSWORD` | Postgres-Passwort | sicheres Passwort |
+| `JWT_SECRET` | Signiert Session-/Auth-Tokens (Pflicht) | `openssl rand -base64 48` |
+| `ENCRYPTION_KEY` | AES-256-GCM Schlüssel für Credentials (Pflicht, exakt 32 Zeichen) | `openssl rand -hex 16` |
+| `NEXTAUTH_SECRET` | Next.js Auth Secret | `openssl rand -base64 32` |
+| `MCP_BEARER_TOKEN` | Bearer-Token für MCP-Endpoint-Zugriff | `openssl rand -hex 32` |
+| `MCP_AUTH_MODE` | Auth-Modus für MCP-Endpoint (`legacy`, u.a.) | `legacy` |
+| `MCP_ALLOW_ANONYMOUS` | Anonymer Zugriff auf MCP-Endpoint erlauben (nicht empfohlen für öffentliche Domains) | `false` |
+| `FRONTEND_URL` / `NEXTAUTH_URL` | Öffentliche URL der Web-UI | `https://haimcp.arbeitermili.eu` |
+| `NEXT_PUBLIC_API_URL` / `SERVER_URL` | Öffentliche URL der API/MCP-Domain | `https://haimcpapi.arbeitermili.eu` |
+| `CORS_ORIGIN` | Erlaubte Origin(s) für CORS | `https://haimcp.arbeitermili.eu` |
+| `AMCP_PORT_UI` | Extern gemappter UI-Port | `3003` |
+| `AMCP_PORT_MCP` | Extern gemappter MCP/API-Port | `4004` |
+| `REDIS_URL` | Redis-URL (intern, automatisch gesetzt) | `redis://redis:6379` |
 
 ---
 
 ## Services & Ports
 
-| Service | URL | Beschreibung |
+| Service | Intern | Extern (Standard) | Beschreibung |
+|---|---|---|---|
+| Web UI | 3000 | 3003 | Verwaltungsoberfläche |
+| MCP Endpoint | 4000 | 4004 | `/mcp/:serverId` – Protokoll für AI-Clients |
+| API Docs | 4000 | 4004 | `/api/docs` – Swagger REST-Dokumentation |
+| Postgres | 5432 | – (nur intern) | Datenbank |
+| Redis | 6379 | – (nur intern) | Cache (optional, App läuft auch ohne) |
+
+---
+
+## Öffentlicher Zugriff via Cloudflare Tunnel
+
+Dieser Stack ist für den Betrieb hinter einem laufenden **Cloudflare Tunnel** ausgelegt – kein Port-Forwarding am Router nötig.
+
+Beispiel-Setup mit zwei Subdomains:
+
+| Subdomain | Zeigt auf (Host-Port) | Zweck |
 |---|---|---|
-| Web UI | `http://localhost:3000` | Verwaltungsoberfläche |
-| MCP Endpoint | `http://localhost:4000/mcp` | MCP-Protokoll für AI-Clients |
-| Swagger / API Docs | `http://localhost:4000/api/docs` | REST API Dokumentation |
+| `haimcp.arbeitermili.eu` | `localhost:3003` | Web UI |
+| `haimcpapi.arbeitermili.eu` | `localhost:4004` | MCP Endpoint + REST API |
+
+**Ingress-Regel in der `config.yml` des Tunnels:**
+
+```yaml
+ingress:
+  - hostname: haimcp.arbeitermili.eu
+    service: http://localhost:3003
+  - hostname: haimcpapi.arbeitermili.eu
+    service: http://localhost:4004
+  - service: http_status:404
+```
+
+**DNS-Routen anlegen:**
+
+```bash
+cloudflared tunnel route dns <tunnel-name> haimcp.arbeitermili.eu
+cloudflared tunnel route dns <tunnel-name> haimcpapi.arbeitermili.eu
+docker restart cloudflared
+```
+
+**MCP-Client-Verbindung:** Der vollständige MCP-Endpoint für einen Connector lautet:
+
+```
+https://haimcpapi.arbeitermili.eu/mcp/<serverId>
+```
+
+mit Header:
+
+```
+Authorization: Bearer <MCP_BEARER_TOKEN>
+```
 
 ---
 
@@ -133,10 +202,24 @@ docker network create highfishNetwork
 ## Hinweise & Sicherheit
 
 - ⚠️ **Erster Start:** Sofort nach dem Start den Admin-Account anlegen. Der erste registrierte User wird automatisch Admin.
-- 🔒 Credentials werden AES-256-GCM verschlüsselt gespeichert.
+- 🔒 Credentials werden AES-256-GCM verschlüsselt gespeichert (`ENCRYPTION_KEY`, exakt 32 Zeichen).
 - 📋 Jeder Tool-Call wird im Audit-Log protokolliert.
-- 🌐 Port öffentlich erreichbar? Firewall-Regeln setzen oder UI vorerst auf `127.0.0.1` binden.
-- 🔑 `AMCP_SECRET` regelmäßig rotieren (`openssl rand -hex 32`).
+- 🔑 `JWT_SECRET`, `ENCRYPTION_KEY`, `NEXTAUTH_SECRET` und `MCP_BEARER_TOKEN` regelmäßig rotieren.
+- 🌐 Bei öffentlicher Domain (z. B. via Cloudflare Tunnel) immer `MCP_BEARER_TOKEN` setzen statt `MCP_ALLOW_ANONYMOUS=true`.
+- 🗄️ Redis ist optional — läuft die App ohne Redis-Verbindung, wird Caching automatisch deaktiviert, ohne dass der Container abstürzt.
+
+---
+
+## Troubleshooting
+
+| Fehler | Ursache | Lösung |
+|---|---|---|
+| `Cannot resolve environment variable: DATABASE_URL` | Kein Postgres-Service / Variable fehlt | Postgres-Service im Compose sicherstellen, `.env` prüfen |
+| `[secrets] JWT_SECRET is not set` | Pflicht-Secret fehlt | `JWT_SECRET` in `.env` / Portainer-Stack setzen |
+| `ECONNREFUSED ...:4000` | Backend crasht beim Start (meist fehlende Secrets) | Container-Logs prüfen, alle Pflicht-Secrets setzen |
+| `401` am MCP-Endpoint, `www-authenticate: Bearer` | Kein/falscher `MCP_BEARER_TOKEN` gesendet | Echten Token-Wert (nicht Platzhalter!) im Client/Header verwenden |
+| `Failed to fetch (check CORS?)` im Browser-Client | Falsche Domain/Endpoint-Pfad oder CORS_ORIGIN passt nicht zur Client-Origin | Richtige `haimcpapi`-Domain + Connector-ID nutzen, `CORS_ORIGIN` anpassen |
+| `Redis connection error` (wiederholt) | Kein Redis-Service im Stack | Redis-Service ergänzen oder ignorieren (App läuft trotzdem, nur ohne Cache) |
 
 ---
 
