@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./Logo_I_AnyMCP.png" alt="hAI.AnythingMCP Logo" width="180">
+<img src="./Logo_I_AnyMCP.png" alt="hAI.AnythingMCP Logo" width="480">
 
 # hAI.AnythingMCP
 
