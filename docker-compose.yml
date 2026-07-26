@@ -1,0 +1,57 @@
+# hAI.AnythingMCP — Portainer Stack
+# Upstream: https://github.com/HelpCode-ai/anythingmcp
+# Netzwerk: highfishNetwork (externes Docker-Netzwerk)
+# -------------------------------------------------------
+# Vorbereitung:
+#   docker network create highfishNetwork  (falls noch nicht vorhanden)
+#   cp .env.example .env && joe .env
+# -------------------------------------------------------
+
+services:
+
+  anythingmcp:
+    image: helpcodeai/anythingmcp:latest
+    container_name: hai_anythingmcp
+    restart: unless-stopped
+    ports:
+      - "${AMCP_PORT_UI:-3000}:3000"
+      - "${AMCP_PORT_MCP:-4000}:4000"
+    environment:
+      - SECRET=${AMCP_SECRET}
+      - ADMIN_EMAIL=${AMCP_ADMIN_EMAIL:-admin@example.com}
+      - NODE_ENV=production
+      # Redis (optional — Zeile einkommentieren und Redis-Block unten aktivieren)
+      # - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      # AI-Features (opt-in — API-Key eintragen zum Aktivieren)
+      # - OPENAI_API_KEY=${OPENAI_API_KEY}
+      # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - anythingmcp_data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - highfishNetwork
+
+  # Redis (optional — gesamten Block auskommentieren zum Aktivieren)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: hai_anythingmcp_redis
+  #   restart: unless-stopped
+  #   volumes:
+  #     - redis_data:/data
+  #   networks:
+  #     - highfishNetwork
+
+volumes:
+  anythingmcp_data:
+    driver: local
+  # redis_data:
+  #   driver: local
+
+networks:
+  highfishNetwork:
+    external: true
