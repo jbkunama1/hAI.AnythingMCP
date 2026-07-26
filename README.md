@@ -1,4 +1,11 @@
+<div align="center">
+
+<img src="./Logo_I_AnyMCP.png" alt="hAI.AnythingMCP Logo" width="180">
+
 # hAI.AnythingMCP
+
+**Self-hosted AnythingMCP Gateway** — läuft als Portainer Stack im `highfishNetwork`
+Basiert auf [HelpCode-ai/anythingmcp](https://github.com/HelpCode-ai/anythingmcp) · wandelt REST, SOAP, GraphQL & Datenbanken in MCP-Tools für Claude, ChatGPT, Gemini & Co. um
 
 [![Upstream](https://img.shields.io/badge/upstream-HelpCode--ai%2Fanythingmcp-blue?logo=github)](https://github.com/HelpCode-ai/anythingmcp)
 [![Docker](https://img.shields.io/badge/docker-helpcodeai%2Fanythingmcp-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/helpcodeai/anythingmcp)
@@ -8,8 +15,7 @@
 [![Stack](https://img.shields.io/badge/stack-Portainer-13BEF9?logo=portainer&logoColor=white)]()
 [![Platform](https://img.shields.io/badge/platform-Debian%20%7C%20DietPi-red?logo=debian)]()
 
-> **Self-hosted AnythingMCP Gateway** – läuft als Portainer Stack im `highfishNetwork`.
-> Basiert auf [HelpCode-ai/anythingmcp](https://github.com/HelpCode-ai/anythingmcp) – wandelt REST, SOAP, GraphQL & Datenbanken in MCP-Tools für Claude, ChatGPT, Gemini & Co. um.
+</div>
 
 ---
 
@@ -61,7 +67,6 @@ AnythingMCP ist ein selbst-gehostetes, KI-gestütztes **MCP-Gateway**. Es wandel
 - `.env` Datei auf Basis von `.env.example` anlegen
 
 ```bash
-# Netzwerk anlegen (falls noch nicht vorhanden)
 docker network create highfishNetwork
 ```
 
@@ -69,25 +74,17 @@ docker network create highfishNetwork
 
 ## Schnellstart (Portainer Stack)
 
-1. **Repository klonen oder `docker-compose.yml` in Portainer einfügen**
-2. **`.env` anlegen:**
+1. **In Portainer:** `Stacks` → `Add Stack` → `Git Repository`
+2. **Repository URL:** `https://github.com/jbkunama1/hAI.AnythingMCP.git`
+3. **Repository reference:** `refs/heads/main`
+4. **Compose path:** `docker-compose.yml`
+5. **Environment-Variablen** eintragen
+6. **Deploy Stack**
 
-```bash
-cp .env.example .env
-# Werte anpassen (joe .env)
-```
-
-3. **In Portainer:**
-   - Stacks → Add Stack → Git Repository oder Editor
-   - Stack-Name: `hAI-AnythingMCP`
-   - `docker-compose.yml` verwenden
-   - Environment-Variablen aus `.env` eintragen
-   - Deploy Stack
-
-4. **Nach dem Start:**
-   - Web UI: `http://<deine-ip>:3000`
-   - MCP Endpoint: `http://<deine-ip>:4000/mcp`
-   - ⚠️ **Sofort ersten Admin-Account anlegen!**
+Nach dem Start:
+- Web UI: `http://<deine-ip>:3000`
+- MCP Endpoint: `http://<deine-ip>:4000/mcp`
+- ⚠️ **Sofort ersten Admin-Account anlegen!**
 
 ---
 
@@ -117,7 +114,7 @@ Siehe [`.env.example`](./.env.example) für alle verfügbaren Variablen.
 
 ## Netzwerk
 
-Dieser Stack nutzt das **externe Docker-Netzwerk `highfishNetwork`**, damit er sich mit anderen Diensten im Stack (z. B. Open WebUI, FHEM, Reverse Proxy) verbinden kann.
+Dieser Stack nutzt das **externe Docker-Netzwerk `highfishNetwork`**, damit er sich mit anderen Diensten im Stack verbinden kann.
 
 ```yaml
 networks:
@@ -125,10 +122,11 @@ networks:
     external: true
 ```
 
-> Falls das Netzwerk noch nicht existiert:
-> ```bash
-> docker network create highfishNetwork
-> ```
+Falls das Netzwerk noch nicht existiert:
+
+```bash
+docker network create highfishNetwork
+```
 
 ---
 
