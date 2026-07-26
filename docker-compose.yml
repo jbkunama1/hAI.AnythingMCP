@@ -1,56 +1,65 @@
-# hAI.AnythingMCP — Portainer Stack
-# Upstream: https://github.com/HelpCode-ai/anythingmcp
-# Netzwerk: highfishNetwork (externes Docker-Netzwerk)
-# -------------------------------------------------------
-# Vorbereitung:
-#   docker network create highfishNetwork  (falls noch nicht vorhanden)
-#   cp .env.example .env && joe .env
-# -------------------------------------------------------
-
 services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: hai_anythingmcp_postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=amcp
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-amcp}
+      - POSTGRES_DB=anythingmcp
+    volumes:
+      - anythingmcp_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U amcp -d anythingmcp"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - highfishNetwork
 
   anythingmcp:
     image: helpcodeai/anythingmcp:latest
     container_name: hai_anythingmcp
     restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
     ports:
       - "${AMCP_PORT_UI:-3000}:3000"
       - "${AMCP_PORT_MCP:-4000}:4000"
     environment:
-      - SECRET=${AMCP_SECRET}
-      - ADMIN_EMAIL=${AMCP_ADMIN_EMAIL:-admin@example.com}
       - NODE_ENV=production
-      # Redis (optional — Zeile einkommentieren und Redis-Block unten aktivieren)
-      # - REDIS_URL=${REDIS_URL:-redis://redis:6379}
-      # AI-Features (opt-in — API-Key eintragen zum Aktivieren)
-      # - OPENAI_API_KEY=${OPENAI_API_KEY}
-      # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - PORT=4000
+      - DATABASE_URL=postgresql://amcp:${POSTGRES_PASSWORD:-amcp}@postgres:5432/anythingmcp
+      - JWT_SECRET=${JWT_SECRET}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=${FRONTEND_URL:-http://localhost:3000}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:3000}
+      - SERVER_URL=${SERVER_URL:-http://localhost:4000}
+      - ALLOW_OPEN_REGISTRATION=${ALLOW_OPEN_REGISTRATION:-false}
+      - MCP_AUTH_MODE=${MCP_AUTH_MODE:-legacy}
+      - MCP_API_KEY=${MCP_API_KEY:-}
+      - MCP_BEARER_TOKEN=${MCP_BEARER_TOKEN:-}
+      - MCP_ALLOW_ANONYMOUS=${MCP_ALLOW_ANONYMOUS:-false}
     volumes:
       - anythingmcp_data:/app/data
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - highfishNetwork
-
-  # Redis (optional — gesamten Block auskommentieren zum Aktivieren)
-  # redis:
-  #   image: redis:7-alpine
-  #   container_name: hai_anythingmcp_redis
-  #   restart: unless-stopped
-  #   volumes:
-  #     - redis_data:/data
-  #   networks:
-  #     - highfishNetwork
 
 volumes:
   anythingmcp_data:
     driver: local
-  # redis_data:
-  #   driver: local
+  anythingmcp_postgres:
+    driver: local
 
 networks:
   highfishNetwork:
