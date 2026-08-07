@@ -1,4 +1,8 @@
 <p align="center">
+
+<a href="https://www.buymeacoffee.com/highfish">
+<img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174">
+</a>
   <img src="https://raw.githubusercontent.com/jbkunama1/hAI.AnythingMCP/main/Logo_I_AnyMCP.png" alt="hAI.AnythingMCP Logo" width="600">
 </p>
 
@@ -232,3 +236,4 @@ docker network create highfishNetwork
 ---
 
 > ⭐ Wenn dir AnythingMCP gefällt, gib dem [Upstream-Repo](https://github.com/HelpCode-ai/anythingmcp) einen Star!
+
