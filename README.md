@@ -16,10 +16,10 @@ Basiert auf [HelpCode-ai/anythingmcp](https://github.com/HelpCode-ai/anythingmcp
 [![Docker](https://img.shields.io/badge/docker-helpcodeai%2Fanythingmcp-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/helpcodeai/anythingmcp)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-green?logo=gnu)](https://github.com/HelpCode-ai/anythingmcp/blob/main/LICENSE)
 [![Self-Hosted](https://img.shields.io/badge/deployment-self--hosted-orange?logo=portainer)](https://www.portainer.io/)
-[![Network](https://img.shields.io/badge/network-highfishNetwork-blueviolet?logo=docker)]()
-[![Stack](https://img.shields.io/badge/stack-Portainer-13BEF9?logo=portainer&logoColor=white)]()
-[![Platform](https://img.shields.io/badge/platform-Debian%20%7C%20DietPi-red?logo=debian)]()
-[![Tunnel](https://img.shields.io/badge/access-Cloudflare%20Tunnel-F38020?logo=cloudflare&logoColor=white)]()
+[![Network](https://img.shields.io/badge/network-highfishNetwork-blueviolet?logo=docker)](https://github.com/jbkunama1/hAI.AnythingMCP)
+[![Stack](https://img.shields.io/badge/stack-Portainer-13BEF9?logo=portainer&logoColor=white)](https://github.com/jbkunama1/hAI.AnythingMCP)
+[![Platform](https://img.shields.io/badge/platform-Debian%20%7C%20DietPi-red?logo=debian)](https://github.com/jbkunama1/hAI.AnythingMCP)
+[![Tunnel](https://img.shields.io/badge/access-Cloudflare%20Tunnel-F38020?logo=cloudflare&logoColor=white)](https://github.com/jbkunama1/hAI.AnythingMCP)
 
 ---
 
